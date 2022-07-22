@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9B8EE633-B33E-45D8-8CDC-AEAB4FC62E28}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MessageServiceConsumer</RootNamespace>
+    <AssemblyName>MessageServiceConsumer</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=5.0.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Commercials, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Commercials.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Common, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Common.PersistentObjects, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Common.PersistentObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Exceptions.Commercials, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Exceptions.Commercials.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Exceptions.Common, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Exceptions.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Exceptions.Financials, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Exceptions.Financials.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Exceptions.People, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Exceptions.People.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Exceptions.ProjectCosting, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Exceptions.ProjectCosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Exceptions.ProjectCosting.Billing, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Exceptions.ProjectCosting.Billing.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Exceptions.TSE, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Exceptions.TSE.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Financials, Version=19.0.0.0, Culture=neutral, PublicKeyToken=56cc4aa2c6a12364, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Financials.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Locks.Commercials, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Locks.Commercials.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Locks.ProjectCosting, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Locks.ProjectCosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.Locks.TimesheetAndExpenses, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.Locks.TimesheetAndExpenses.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.People, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.People.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.PersistentObjects, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.PersistentObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Accounting.ProjectCosting, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Accounting.ProjectCosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Common, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Common.Interop, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Common.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Common.LinqExpandable, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Common.LinqExpandable.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Common.LinqExtensions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Common.LinqExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Data, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Data.ModelManagement, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Data.ModelManagement.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.IdentityModel.Claims.Sage200, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.IdentityModel.Claims.Sage200.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.IdentityModel.Tokens.SageID, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.IdentityModel.Tokens.SageID.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.IdentityProvider.Windows, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.IdentityProvider.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Integration.SagePayrollProvider, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Integration.SagePayrollProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.IO, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.IO.Local, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.IO.Local.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.MMS.View.Data, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.MMS.View.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.ObjectStore, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.ObjectStore.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.ObjectStore.Builder, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.ObjectStore.Builder.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.ObjectStore.Controls, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.ObjectStore.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Query.Extensions, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Query.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Sage.Utils, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SageClientInitiator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Initiator.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MessageServiceConsumer.pp" />
+    <None Include="MessageServiceConsumer.sdbx" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
