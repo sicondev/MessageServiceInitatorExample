@@ -13,6 +13,7 @@ namespace MessageServiceExample
     internal class Program
     {
         private static readonly ConsoleColor DEFAULT_FORECOLOR;
+        private static readonly Sage.Common.Messaging.CrossCutMessageSource SiconOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("SiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
 
         /// <summary>
         /// Static Constructor
@@ -98,6 +99,9 @@ namespace MessageServiceExample
                     sopOrder.Update();
 
                     sopOrder.Post(true, true);
+
+                    //Notify the Cross cut message source
+                    Sage.Common.Messaging.MessageService.GetInstance()?.Notify(SiconOrderCreatedMessageSource, sopOrder, new Sage.Common.Messaging.MessageArgs());
 
                     LogSuccess($"Sales Order '{sopOrder.DocumentNo}' posted successfully.");
                 }

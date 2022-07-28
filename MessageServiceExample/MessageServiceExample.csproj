@@ -106,7 +106,7 @@
     </Reference>
     <Reference Include="Sage.Common, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
       <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Common.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Sage.Common.Interop, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
       <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Common.Interop.dll</HintPath>
@@ -178,7 +178,7 @@
     </Reference>
     <Reference Include="Sage.Utils, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
       <HintPath>..\packages\Sage200c.Objects.20.0.17221.8\lib\net35\Sage.Utils.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Sage.Web.Services.AutoStartProvider, Version=19.0.0.0, Culture=neutral, PublicKeyToken=b2daa66d74953d11, processorArchitecture=MSIL">
       <HintPath>..\packages\Sage200c.Web.20.0.17221.3\lib\net35\Sage.Web.Services.AutoStartProvider.dll</HintPath>
