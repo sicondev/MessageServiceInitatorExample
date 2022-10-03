@@ -17,8 +17,14 @@ namespace MessageServiceConsumer
         //Delegate for Sicon Order Created
         private Sage.Common.Messaging.MessageHandler SiconOrderCreatedHander = new Sage.Common.Messaging.MessageHandler(SiconOrderCreated);
 
+        //Delegate for Kititng Sicon Order Created
+        private Sage.Common.Messaging.MessageHandler KittingSiconOrderCreatedHander = new Sage.Common.Messaging.MessageHandler(KittingSiconOrderCreated);
+
         //Message Source for Sicon Order Created
         private static readonly Sage.Common.Messaging.CrossCutMessageSource SiconOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("SiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
+
+        //Message Source for Kitting Order Created
+        private static readonly Sage.Common.Messaging.CrossCutMessageSource KittingOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("KittingSiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
 
         /// <summary>
         /// Constructor
@@ -48,6 +54,7 @@ namespace MessageServiceConsumer
 
                 messageService.Subscribe(Sage.Accounting.SOP.SOPLedgerMessageSource.SOPOrderSaved, SOPOrderSavedHander);
                 messageService.Subscribe(SiconOrderCreatedMessageSource, SiconOrderCreatedHander);
+                messageService.Subscribe(KittingOrderCreatedMessageSource, KittingSiconOrderCreatedHander);
 
                 messageService = null;
             }
@@ -68,6 +75,7 @@ namespace MessageServiceConsumer
 
                 messageService.Unsubscribe(Sage.Accounting.SOP.SOPLedgerMessageSource.SOPOrderSaved, SOPOrderSavedHander);
                 messageService.Unsubscribe(SiconOrderCreatedMessageSource, SiconOrderCreatedHander);
+                messageService.Unsubscribe(KittingOrderCreatedMessageSource, KittingSiconOrderCreatedHander);
 
                 messageService = null;
                 SOPOrderSavedHander = null;
@@ -95,8 +103,9 @@ namespace MessageServiceConsumer
 
             return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());
         }
+
         /// <summary>
-        /// Handles the SOPOrderSaved Message
+        /// Handles the SiconOrderCreated Message
         /// </summary>
         /// <param name="sender">The sender</param>
         /// <param name="args">The Message Args</param>
@@ -107,6 +116,23 @@ namespace MessageServiceConsumer
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine($"Message Service Consumer: Sicon Sales Order '{order.DocumentNo}' Created.");
+            }
+
+            return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());
+        }
+
+        /// <summary>
+        /// Handles the KittingSOPOrderSaved Message
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="args">The Message Args</param>
+        /// <returns><Message Response/returns>
+        private static Sage.Common.Messaging.Response KittingSiconOrderCreated(object sender, Sage.Common.Messaging.MessageArgs args)
+        {
+            if (sender is Sage.Accounting.SOP.SOPOrder order)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.WriteLine($"Message Service Consumer: Kitting - Sicon Sales Order '{order.DocumentNo}' Created.");
             }
 
             return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());

@@ -14,7 +14,7 @@ namespace MessageServiceExample
     {
         private static readonly ConsoleColor DEFAULT_FORECOLOR;
         private static readonly Sage.Common.Messaging.CrossCutMessageSource SiconOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("SiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
-
+       
         /// <summary>
         /// Static Constructor
         /// </summary>
