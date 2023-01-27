@@ -129,6 +129,9 @@ namespace MessageServiceConsumer
                     Console.WriteLine($"Message Service Consumer: Project Nunber: '{hashtable["ProjectNumber"]}' Created.");
                     Console.WriteLine($"Message Service Consumer: Project Header: '{hashtable["ProjectHeaderNumber"]}' Created.");
                 }
+
+                //Alternate way to get the sales order out of the hashtable
+                Sage.Accounting.SOP.SOPOrder sopOrder = hashtable.OfType<Sage.Accounting.SOP.SOPOrder>().FirstOrDefault();
             }
 
             return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());
@@ -154,6 +157,9 @@ namespace MessageServiceConsumer
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine($"Message Service Consumer: Sicon Sales Order (Advanced) '{salesOrder.DocumentNo}' Created.");
                 }
+
+                //Alternate way to get the sales order out of the hashtable
+                Sage.Accounting.SOP.SOPOrder sopOrder = hashtable.OfType<Sage.Accounting.SOP.SOPOrder>().FirstOrDefault();
             }
 
             return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());
