@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,6 +118,18 @@ namespace MessageServiceConsumer
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine($"Message Service Consumer: Sicon Sales Order '{order.DocumentNo}' Created.");
             }
+            else if (sender is Hashtable hashtable)
+            {
+                if (hashtable["SalesOrder"] is Sage.Accounting.SOP.SOPOrder salesOrder)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"Message Service Consumer: Sicon Sales Order (Advanced) '{salesOrder.DocumentNo}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Courier Service: '{hashtable["CourierService"]}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Delivery Instructions: '{hashtable["CourerServiceDescription"]}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Project Nunber: '{hashtable["ProjectNumber"]}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Project Header: '{hashtable["ProjectHeaderNumber"]}' Created.");
+                }
+            }
 
             return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());
         }
@@ -133,6 +146,14 @@ namespace MessageServiceConsumer
             {
                 Console.ForegroundColor = ConsoleColor.DarkBlue;
                 Console.WriteLine($"Message Service Consumer: Kitting - Sicon Sales Order '{order.DocumentNo}' Created.");
+            }
+            else if (sender is Hashtable hashtable)
+            {
+                if (hashtable["SalesOrder"] is Sage.Accounting.SOP.SOPOrder salesOrder)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"Message Service Consumer: Sicon Sales Order (Advanced) '{salesOrder.DocumentNo}' Created.");
+                }
             }
 
             return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());

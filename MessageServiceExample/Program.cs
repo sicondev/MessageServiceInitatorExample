@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -66,6 +67,8 @@ namespace MessageServiceExample
 
                     Program.CreateSalesOrder();
 
+                    Program.CreateSalesOrderAdvanced();
+
                     LogGeneral($"Disconnecting from '{companyName}'.");
                 }
 
@@ -102,6 +105,43 @@ namespace MessageServiceExample
 
                     //Notify the Cross cut message source
                     Sage.Common.Messaging.MessageService.GetInstance()?.Notify(SiconOrderCreatedMessageSource, sopOrder, new Sage.Common.Messaging.MessageArgs());
+
+                    LogSuccess($"Sales Order '{sopOrder.DocumentNo}' posted successfully.");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Creates a sales order using the advanced option
+        /// </summary>
+        private static void CreateSalesOrderAdvanced()
+        {
+            try
+            {
+                LogGeneral("Creating Sales Order (Advanced)...");
+
+                using (Sage.Accounting.SOP.SOPOrder sopOrder = new Sage.Accounting.SOP.SOPOrder())
+                {
+                    sopOrder.Customer = Sage.Accounting.SalesLedger.CustomerFactory.Factory.Fetch("Abb001");
+
+                    sopOrder.Update();
+
+                    sopOrder.Post(true, true);
+
+                    Hashtable hashtable = new Hashtable();
+
+                    hashtable["SalesOrder"] = sopOrder;
+                    hashtable["CourierService"] = "DHL";
+                    hashtable["CourerServiceDescription"] = "Special Delivery Instructions";
+                    hashtable["ProjectNumber"] = "J00000001";
+                    hashtable["ProjectHeaderNumber"] = "Revenue";
+
+                    //Notify the Cross cut message source
+                    Sage.Common.Messaging.MessageService.GetInstance()?.Notify(SiconOrderCreatedMessageSource, hashtable, new Sage.Common.Messaging.MessageArgs());
 
                     LogSuccess($"Sales Order '{sopOrder.DocumentNo}' posted successfully.");
                 }
