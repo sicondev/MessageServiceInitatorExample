@@ -15,7 +15,8 @@ namespace MessageServiceExample
     {
         private static readonly ConsoleColor DEFAULT_FORECOLOR;
         private static readonly Sage.Common.Messaging.CrossCutMessageSource SiconOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("SiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
-       
+        private static readonly Sage.Common.Messaging.CrossCutMessageSource SiconOrderLineCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("SiconSalesOrderLine", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
+
         /// <summary>
         /// Static Constructor
         /// </summary>
@@ -78,11 +79,15 @@ namespace MessageServiceExample
 
                 LogInfo("Press any key to exit.");
 
-                Console.ReadKey();
+
             }
             catch (Exception e)
             {
                 LogError(e);
+            }
+            finally
+            {
+                Console.ReadKey();
             }
         }
 
@@ -97,9 +102,11 @@ namespace MessageServiceExample
 
                 using (Sage.Accounting.SOP.SOPOrder sopOrder = new Sage.Accounting.SOP.SOPOrder())
                 {
-                    sopOrder.Customer = Sage.Accounting.SalesLedger.CustomerFactory.Factory.Fetch("Abb001");
+                    sopOrder.Customer = Sage.Accounting.SalesLedger.CustomerFactory.Factory.Fetch("ABB001");
 
                     sopOrder.Update();
+
+                    AddNonTraceableStandardItemLine(sopOrder, sopOrder.SOPLedger, "ACS/BLENDER");
 
                     sopOrder.Post(true, true);
 
@@ -130,6 +137,8 @@ namespace MessageServiceExample
 
                     sopOrder.Update();
 
+                    AddNonTraceableStandardItemLine(sopOrder, sopOrder.SOPLedger, "ACS/BLENDER");
+
                     sopOrder.Post(true, true);
 
                     Hashtable hashtable = new Hashtable();
@@ -144,6 +153,133 @@ namespace MessageServiceExample
                     Sage.Common.Messaging.MessageService.GetInstance()?.Notify(SiconOrderCreatedMessageSource, hashtable, new Sage.Common.Messaging.MessageArgs());
 
                     LogSuccess($"Sales Order '{sopOrder.DocumentNo}' posted successfully.");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Adds a Non Traceable Standard Item Line
+        /// </summary>
+        /// <param name="sopOrder">The SOP Order</param>
+        /// <param name="sopLedger">The SOP Ledger</param>
+        /// <param name="itemCode">The Item Code</param>
+        private static void AddNonTraceableStandardItemLine(Sage.Accounting.SOP.SOPOrderReturn sopOrder, Sage.Accounting.SOP.SOPLedger sopLedger, string itemCode)
+        {
+            try
+            {
+
+                using (Sage.Accounting.Stock.StockItems stockItems = new Sage.Accounting.Stock.StockItems())
+                {
+                    // Find the non-traceable item "TILE/WHT/20X20"
+                    Sage.Accounting.Stock.StockItem stockItem = stockItems[itemCode];
+
+                    if (stockItem != null)
+                    {
+                        // Use the WarehouseStockItemViews to get the WarehouseItem that links the
+                        // stock item "TILE/WHT/20X20" and warehouse "WAREHOUSE"
+                        Sage.Accounting.Stock.Views.WarehouseStockItemViews warehouseStockItemViews = new Sage.Accounting.Stock.Views.WarehouseStockItemViews();
+
+                        Sage.Accounting.Stock.Views.WarehouseStockItemView warehouseStockItemView = null;
+
+                        // Add the stock item filter
+                        warehouseStockItemViews.Query.Filters.Add(new Sage.ObjectStore.Filter(Sage.Accounting.Stock.Views.WarehouseStockItemView.FIELD_ITEM, stockItem.Item));
+
+                        warehouseStockItemViews.Query.Find();
+
+                        // Find the first warehouse bin that has available stock
+                        foreach (Sage.Accounting.Stock.Views.WarehouseStockItemView view in warehouseStockItemViews)
+                        {
+                            if (view.FreeStockAvailable > System.Decimal.Zero)
+                            {
+                                warehouseStockItemView = view;
+
+                                break;
+                            }
+                        }
+
+                        if (warehouseStockItemView != null)
+                        {
+                            // Instantiate the line type
+                            Sage.Accounting.SOP.SOPStandardItemLine sopStandardItemLine =
+                                new Sage.Accounting.SOP.SOPStandardItemLine();
+
+                            // Set the order
+                            sopStandardItemLine.SOPOrderReturn = sopOrder;
+
+                            try
+                            {
+                                // Set the stock item
+                                sopStandardItemLine.Item = stockItem;
+
+                                // Set the warehouse item
+                                sopStandardItemLine.WarehouseItem = warehouseStockItemView.WarehouseItem;
+
+                                // Set the fulfilment method
+                                if (sopOrder.SOPUserPermission.OverrideFulfilmentMethod)
+                                {
+                                    // Optional: this can either be set to From Stock, From Supplier Via Stock
+                                    // or From Supplier Direct to Customer
+                                    sopStandardItemLine.FulfilmentMethod =
+                                        Sage.Accounting.Stock.SOPOrderFulfilmentMethodEnum.EnumFulfilmentFromStock;
+                                }
+
+                                // If the SOP ledger is configured to allocate on order entry setting
+                                // the LineQuantity will also set the ToAllocateQuantity property
+                                sopStandardItemLine.LineQuantity = 1M;
+
+                                // Make sure user has permission to set price and discount
+                                if (sopOrder.SOPUserPermission.OverridePricesDiscounts)
+                                {
+                                    // Add the allowable warning for Ex20319Exception so that the
+                                    // UnitSellingPrice can be set without requesting confirmation
+                                    Sage.Accounting.Application.AllowableWarnings.Add(sopStandardItemLine,
+                                        typeof(Sage.Accounting.Exceptions.Ex20319Exception));
+
+                                    // Set the new price
+                                    sopStandardItemLine.UnitSellingPrice = 199.99M;
+
+                                    // Add the allowable warning for Ex20320Exception so that the
+                                    // UnitDiscountPercent can be set without requesting confirmation                    
+                                    Sage.Accounting.Application.AllowableWarnings.Add(sopStandardItemLine,
+                                        typeof(Sage.Accounting.Exceptions.Ex20320Exception));
+
+                                    // Set discount
+                                    sopStandardItemLine.UnitDiscountPercent = 5M;
+                                }
+
+                                // Add the line to the order
+                                sopOrder.Lines.Add(sopStandardItemLine);
+
+                                // Save the line
+                                // This also sets the document number to next auto generated order number
+                                sopStandardItemLine.Post(sopLedger.Setting.RecordCancelledOrdLines);
+
+                                //Notify Message Source
+                                Sage.Common.Messaging.MessageService.GetInstance().Notify(SiconOrderLineCreatedMessageSource, sopStandardItemLine, new Sage.Common.Messaging.MessageArgs());
+                            }
+                            finally
+                            {
+                                // Remove any allowable warnings
+                                if (Sage.Accounting.Application.AllowableWarnings.IsAllowed(sopStandardItemLine,
+                                    typeof(Sage.Accounting.Exceptions.Ex20319Exception)))
+                                {
+                                    Sage.Accounting.Application.AllowableWarnings.Delete(sopStandardItemLine,
+                                        typeof(Sage.Accounting.Exceptions.Ex20319Exception));
+                                }
+
+                                if (Sage.Accounting.Application.AllowableWarnings.IsAllowed(sopStandardItemLine,
+                                    typeof(Sage.Accounting.Exceptions.Ex20320Exception)))
+                                {
+                                    Sage.Accounting.Application.AllowableWarnings.Delete(sopStandardItemLine,
+                                        typeof(Sage.Accounting.Exceptions.Ex20320Exception));
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception)
