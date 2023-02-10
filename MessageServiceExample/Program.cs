@@ -144,10 +144,8 @@ namespace MessageServiceExample
                     Hashtable hashtable = new Hashtable();
 
                     hashtable["SalesOrder"] = sopOrder;
-                    hashtable["CourierService"] = "DHL";
-                    hashtable["CourerServiceDescription"] = "Special Delivery Instructions";
-                    hashtable["ProjectNumber"] = "J00000001";
-                    hashtable["ProjectHeaderNumber"] = "Revenue";
+                    hashtable["SiconCourierDelServiceDesc"] = "DPD NEXT DAY";
+                    hashtable["DeliveryInstructions"] = "Special Delivery Instructions";
 
                     //Notify the Cross cut message source
                     Sage.Common.Messaging.MessageService.GetInstance()?.Notify(SiconOrderCreatedMessageSource, hashtable, new Sage.Common.Messaging.MessageArgs());
