@@ -124,8 +124,8 @@ namespace MessageServiceConsumer
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine($"Message Service Consumer: Sicon Sales Order (Advanced) '{salesOrder.DocumentNo}' Created.");
-                    Console.WriteLine($"Message Service Consumer: Courier Service: '{hashtable["CourierService"]}' Created.");
-                    Console.WriteLine($"Message Service Consumer: Delivery Instructions: '{hashtable["CourerServiceDescription"]}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Courier Service: '{hashtable["SiconCourierDelServiceDesc"]}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Delivery Instructions: '{hashtable["DeliveryInstructions"]}' Created.");
                     Console.WriteLine($"Message Service Consumer: Project Nunber: '{hashtable["ProjectNumber"]}' Created.");
                     Console.WriteLine($"Message Service Consumer: Project Header: '{hashtable["ProjectHeaderNumber"]}' Created.");
                 }
