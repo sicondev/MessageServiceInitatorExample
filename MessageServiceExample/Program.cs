@@ -11,7 +11,7 @@ namespace MessageServiceExample
     /// <summary>
     /// Main program
     /// </summary>
-    internal class Program
+    internal static class Program
     {
         private static readonly ConsoleColor DEFAULT_FORECOLOR;
         private static readonly Sage.Common.Messaging.CrossCutMessageSource SiconOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("SiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
@@ -51,24 +51,25 @@ namespace MessageServiceExample
 
                 string companyName = ConfigurationManager.AppSettings["SageCompanyName"];
 
-                //Syncronises any addon dlls from the server to local app data for the current user account (so addon dlls are in the same directory,
+                //Synchronises any addon dlls from the server to local app data for the current user account (so addon dlls are in the same directory,
                 //if your app is outside of local app data you may need to pull the assemblies in from the sage directory in IIS)
                 //This also ensure any X-Table extensions are loaded
-                bool syncroniseClientFiles = true;
+                const bool synchroniseClientFiles = true;
 
-                //Create client initators ensures initiators in any addons are set up, including Sage Manufacturing
-                bool createClientInitiators = true;
+                //Create client initiators ensures initiators in any addons are set up, including Sage Manufacturing
+                const bool createClientInitiators = true;
 
                 LogInfo($"Attempting to connect to company '{companyName}'.");
 
-                //Connect to Sage 200 using the company name, and ensuring Syncronise client files and create client initiators is true
-                using (SageConnection sageConnection = new SageConnection(companyName, syncroniseClientFiles, createClientInitiators))
+                //Connect to Sage 200 using the company name, and ensuring Synchronise client files and create client initiators is true
+                using (SageConnection sageConnection = new SageConnection(companyName, synchroniseClientFiles, createClientInitiators))
                 {
                     LogSuccess($"Connected to '{companyName}'.");
 
-                    Program.CreateSalesOrder();
+                    Program.CreateSalesOrder("ABB001", "ACS/BLENDER");
 
-                    Program.CreateSalesOrderAdvanced();
+                    Program.CreateSalesOrderAdvanced("ABB001", "ACS/BLENDER", "DPD NEXT DAY", "Special Instructions");
+                    Program.CreateSalesOrderAdvanced("ABB001", "ACS/BLENDER", "", "");
 
                     LogGeneral($"Disconnecting from '{companyName}'.");
                 }
@@ -94,7 +95,7 @@ namespace MessageServiceExample
         /// <summary>
         /// Creates a sales order
         /// </summary>
-        private static void CreateSalesOrder()
+        private static void CreateSalesOrder(string customerRef, string itemCode)
         {
             try
             {
@@ -102,11 +103,11 @@ namespace MessageServiceExample
 
                 using (Sage.Accounting.SOP.SOPOrder sopOrder = new Sage.Accounting.SOP.SOPOrder())
                 {
-                    sopOrder.Customer = Sage.Accounting.SalesLedger.CustomerFactory.Factory.Fetch("ABB001");
+                    sopOrder.Customer = Sage.Accounting.SalesLedger.CustomerFactory.Factory.Fetch(customerRef);
 
                     sopOrder.Update();
 
-                    AddNonTraceableStandardItemLine(sopOrder, sopOrder.SOPLedger, "ACS/BLENDER");
+                    AddNonTraceableStandardItemLine(sopOrder, sopOrder.SOPLedger, itemCode);
 
                     sopOrder.Post(true, true);
 
@@ -125,7 +126,7 @@ namespace MessageServiceExample
         /// <summary>
         /// Creates a sales order using the advanced option
         /// </summary>
-        private static void CreateSalesOrderAdvanced()
+        private static void CreateSalesOrderAdvanced(string customerRef, string itemCode, string courierService, string deliveryInstructions)
         {
             try
             {
@@ -133,19 +134,20 @@ namespace MessageServiceExample
 
                 using (Sage.Accounting.SOP.SOPOrder sopOrder = new Sage.Accounting.SOP.SOPOrder())
                 {
-                    sopOrder.Customer = Sage.Accounting.SalesLedger.CustomerFactory.Factory.Fetch("Abb001");
+                    sopOrder.Customer = Sage.Accounting.SalesLedger.CustomerFactory.Factory.Fetch(customerRef);
 
                     sopOrder.Update();
 
-                    AddNonTraceableStandardItemLine(sopOrder, sopOrder.SOPLedger, "ACS/BLENDER");
+                    AddNonTraceableStandardItemLine(sopOrder, sopOrder.SOPLedger, itemCode);
 
                     sopOrder.Post(true, true);
 
-                    Hashtable hashtable = new Hashtable();
-
-                    hashtable["SalesOrder"] = sopOrder;
-                    hashtable["SiconCourierDelServiceDesc"] = "DPD NEXT DAY";
-                    hashtable["DeliveryInstructions"] = "Special Delivery Instructions";
+                    Hashtable hashtable = new Hashtable
+                    {
+                        ["SalesOrder"] = sopOrder,
+                        ["SiconCourierDelServiceDesc"] = courierService,
+                        ["DeliveryInstructions"] = deliveryInstructions
+                    };
 
                     //Notify the Cross cut message source
                     Sage.Common.Messaging.MessageService.GetInstance()?.Notify(SiconOrderCreatedMessageSource, hashtable, new Sage.Common.Messaging.MessageArgs());
@@ -169,7 +171,6 @@ namespace MessageServiceExample
         {
             try
             {
-
                 using (Sage.Accounting.Stock.StockItems stockItems = new Sage.Accounting.Stock.StockItems())
                 {
                     // Find the non-traceable item "TILE/WHT/20X20"
@@ -185,6 +186,7 @@ namespace MessageServiceExample
 
                         // Add the stock item filter
                         warehouseStockItemViews.Query.Filters.Add(new Sage.ObjectStore.Filter(Sage.Accounting.Stock.Views.WarehouseStockItemView.FIELD_ITEM, stockItem.Item));
+                        warehouseStockItemViews.Query.Filters.Add(new Sage.ObjectStore.Filter(Sage.Accounting.Stock.Views.WarehouseStockItemView.FIELD_WAREHOUSEID, sopOrder.WarehouseDbKey));
 
                         warehouseStockItemViews.Query.Find();
 
