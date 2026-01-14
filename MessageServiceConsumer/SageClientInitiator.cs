@@ -128,6 +128,7 @@ namespace MessageServiceConsumer
                     Console.WriteLine($"Message Service Consumer: Delivery Instructions: '{hashtable["DeliveryInstructions"]}' Created.");
                     Console.WriteLine($"Message Service Consumer: Project Nunber: '{hashtable["ProjectNumber"]}' Created.");
                     Console.WriteLine($"Message Service Consumer: Project Header: '{hashtable["ProjectHeaderNumber"]}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Ready To Pick: '{hashtable["ReadyToPick"]}' Created.");
                 }
 
                 //Alternate way to get the sales order out of the hashtable

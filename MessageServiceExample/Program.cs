@@ -146,7 +146,8 @@ namespace MessageServiceExample
                     {
                         ["SalesOrder"] = sopOrder,
                         ["SiconCourierDelServiceDesc"] = courierService,
-                        ["DeliveryInstructions"] = deliveryInstructions
+                        ["DeliveryInstructions"] = deliveryInstructions,
+                        ["ReadyToPick"] = true
                     };
 
                     //Notify the Cross cut message source
