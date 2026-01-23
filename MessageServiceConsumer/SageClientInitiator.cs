@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MessageServiceConsumer
 {
@@ -21,11 +22,17 @@ namespace MessageServiceConsumer
         //Delegate for Kititng Sicon Order Created
         private Sage.Common.Messaging.MessageHandler KittingSiconOrderCreatedHander = new Sage.Common.Messaging.MessageHandler(KittingSiconOrderCreated);
 
+        //Delegate for Barcoding Sicon Order Created
+        private Sage.Common.Messaging.MessageHandler BarcodingiconOrderCreatedHander = new Sage.Common.Messaging.MessageHandler(BarcodingSiconOrderCreated);
+
         //Message Source for Sicon Order Created
         private static readonly Sage.Common.Messaging.CrossCutMessageSource SiconOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("SiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
 
         //Message Source for Kitting Order Created
         private static readonly Sage.Common.Messaging.CrossCutMessageSource KittingOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("KittingSiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
+
+        //Message Source for Barcoding Order Created
+        private static readonly Sage.Common.Messaging.CrossCutMessageSource BarcodingOrderCreatedMessageSource = new Sage.Common.Messaging.CrossCutMessageSource("BarcodingSiconSalesOrder", "Created", Sage.Common.Messaging.ProcessPoint.PostMethod);
 
         /// <summary>
         /// Constructor
@@ -56,6 +63,7 @@ namespace MessageServiceConsumer
                 messageService.Subscribe(Sage.Accounting.SOP.SOPLedgerMessageSource.SOPOrderSaved, SOPOrderSavedHander);
                 messageService.Subscribe(SiconOrderCreatedMessageSource, SiconOrderCreatedHander);
                 messageService.Subscribe(KittingOrderCreatedMessageSource, KittingSiconOrderCreatedHander);
+                messageService.Subscribe(BarcodingOrderCreatedMessageSource, BarcodingiconOrderCreatedHander);
 
                 messageService = null;
             }
@@ -77,6 +85,7 @@ namespace MessageServiceConsumer
                 messageService.Unsubscribe(Sage.Accounting.SOP.SOPLedgerMessageSource.SOPOrderSaved, SOPOrderSavedHander);
                 messageService.Unsubscribe(SiconOrderCreatedMessageSource, SiconOrderCreatedHander);
                 messageService.Unsubscribe(KittingOrderCreatedMessageSource, KittingSiconOrderCreatedHander);
+                messageService.Unsubscribe(BarcodingOrderCreatedMessageSource, BarcodingiconOrderCreatedHander);
 
                 messageService = null;
                 SOPOrderSavedHander = null;
@@ -156,7 +165,36 @@ namespace MessageServiceConsumer
                 if (hashtable["SalesOrder"] is Sage.Accounting.SOP.SOPOrder salesOrder)
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine($"Message Service Consumer: Sicon Sales Order (Advanced) '{salesOrder.DocumentNo}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Kitting - Sicon Sales Order (Advanced) '{salesOrder.DocumentNo}' Created.");
+                }
+
+                //Alternate way to get the sales order out of the hashtable
+                Sage.Accounting.SOP.SOPOrder sopOrder = hashtable.OfType<Sage.Accounting.SOP.SOPOrder>().FirstOrDefault();
+            }
+
+            return new Sage.Common.Messaging.Response(new Sage.Common.Messaging.ResponseArgs());
+        }
+
+        /// <summary>
+        /// Handles the BarcodingSOPOrderSaved Message
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="args">The Message Args</param>
+        /// <returns><Message Response/returns>
+        private static Sage.Common.Messaging.Response BarcodingSiconOrderCreated(object sender, Sage.Common.Messaging.MessageArgs args)
+        {
+            if (sender is Sage.Accounting.SOP.SOPOrder order)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine($"Message Service Consumer: Barcoding - Sicon Sales Order '{order.DocumentNo}' Created.");
+            }
+            else if (sender is Hashtable hashtable)
+            {
+                if (hashtable["SalesOrder"] is Sage.Accounting.SOP.SOPOrder salesOrder)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"Message Service Consumer: Barcoding - Sicon Sales Order (Advanced) '{salesOrder.DocumentNo}' Created.");
+                    Console.WriteLine($"Message Service Consumer: Barcoding - Ready To Pick: '{hashtable["ReadyToPick"]}' Created.");
                 }
 
                 //Alternate way to get the sales order out of the hashtable

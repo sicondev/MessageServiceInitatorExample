@@ -147,7 +147,7 @@ namespace MessageServiceExample
                         ["SalesOrder"] = sopOrder,
                         ["SiconCourierDelServiceDesc"] = courierService,
                         ["DeliveryInstructions"] = deliveryInstructions,
-                        ["ReadyToPick"] = true
+                        ["ReadyToPick"] = bool.TrueString
                     };
 
                     //Notify the Cross cut message source
